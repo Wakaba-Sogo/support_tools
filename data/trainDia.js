@@ -184,7 +184,8 @@ function displayData() {
         document.getElementById("down").innerHTML = ``;
         document.getElementById("up").innerHTML = ``;
         trainList.forEach(t => {
-            if (t.del) let displayE = `<div id="${t.num}"><span>${t.htd}</span> <span class="delay">+${t.del}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span></div><br>`; else let displayE = `<div id="${t.num}"><span>${t.htd}</span> <span class="delay">+${t.del}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span></div><br>`;
+            let displayE;
+            if (t.del) displayE = `<div id="${t.num}"><span>${t.htd}</span> <span class="delay">+${t.del}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span></div><br>`; else displayE = `<div id="${t.num}"><span>${t.htd}</span> <span class="delay">+${t.del}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span></div><br>`;
             /*　例
                 　12:34 +3分　区間急行 京王線新宿行 10両編成
                 　現在位置 京王永山～若葉台駅間
