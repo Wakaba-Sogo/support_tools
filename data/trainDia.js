@@ -102,10 +102,10 @@ async function getPosition() {
             }
         }
         for (const item of data) {
-            sec = await poList.get(item.id);
+            sec = await Promise.resolve(poList.get(item.id));
             data2[data2.length] = {
                 train: [],
-                section: `${sec["name"]}${sec["kind"]}`
+                section: `${sec.name}${sec.kind}`
             };
             for await (const dt of setTrainData(item.ps)) {
                 data2[data2.length - 1].train[data2[data2.length - 1].train.length] = dt;
