@@ -41,7 +41,7 @@ async function settings() {
             },
             {
                 code: "4",
-                name: "京王車"
+                name: "京王電鉄車両"
             },
             {
                 code: "5",
@@ -53,11 +53,11 @@ async function settings() {
             },
             {
                 code: "7",
-                name: "京王車"
+                name: "京王電鉄車両"
             },
             {
                 code: "8",
-                name: "京王車"
+                name: "京王電鉄車両"
             },
             {
                 code: "9",
@@ -133,6 +133,7 @@ async function createTrainData(allTrainData) {
                     let nowM = new Date().getMinutes();
                     if (time[0] < 4) time[0] = time[0] + 24;
                     if (nowH < 4) nowH = Number(nowH) + 24;
+                    let diaTime = [time[0], time[1]];
                     time[1] += trainData.del;
                     if (time[1] >= 60) {
                         time[1] %= 60;
@@ -140,6 +141,18 @@ async function createTrainData(allTrainData) {
                     }
                     if (time[0] > nowH || (time[0] == nowH && time[1] >= nowM))
                     yield {
+                        num: `${trainData.num}`,
+                        dir: `${trainData.dir ? "下り" : "上り"}`,
+                        trn: trainData.trn == trainData.trn2 ? trainData.trn : `${trainData.trn}(${trainData.trn2})`,
+                        st: trainData.st,
+                        car: `${trainData.car}`,
+                        del: `${trainData.del}`,
+                        ser: trainData.ser,
+                        pos: `${positionData}`,
+                        ht: `${time[0]}:${time[1]}`,
+                        htd: `${diaTime[0]}:${diaTime[1]}`
+                    };
+                    /*
                         num: `${trainData.num}レ`,
                         dir: `${trainData.dir ? "下り" : "上り"}`,
                         trn: trainData.trn == trainData.trn2 ? trainData.trn : `${trainData.trn}(${trainData.trn2})`,
@@ -148,8 +161,9 @@ async function createTrainData(allTrainData) {
                         del: `遅れ${trainData.del}分`,
                         ser: trainData.ser,
                         pos: `現在位置 ${positionData}`,
-                        ht: `若葉台駅発車予定時刻 ${time[0]}時${time[1]}分`
-                    };
+                        ht: `若葉台駅発車予想時刻 ${time[0]}時${time[1]}分`,遅延分数込
+                        htd: `若葉台駅発車予定時刻 ${diaTime[0]}時${diaTime[1]}分`
+                    */
                     else yield null;
                 } else yield null; else yield null;
             } catch (er) {
@@ -163,4 +177,19 @@ async function createTrainData(allTrainData) {
         }
     }
     console.log(trainList);
+}
+
+function displayData() {
+    if (trainList.length) {
+        document.getElementById("down").innerHTML = ``;
+        document.getElementById("up").innerHTML = ``;
+        trainList.forEach(t => {
+            let displayE = `<div id="${t.num}"><span>${t.htd}</span> <span class="delay">+${t.del}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span></div><br>`;
+            /*　例
+                　12:34 +3分　区間急行 京王線新宿行 10両編成
+                　現在位置 京王永山～若葉台駅間
+            */
+           if (t.dir == "下り") document.getElementById("down").innerHTML += displayE; else if (t.dir == "上り") document.getElementById("up").innerHTML += displayE;
+        });
+    } else console.error('"trainData" does not contain any data.');
 }
