@@ -178,6 +178,7 @@ async function createTrainData(allTrainData) {
         }
     }
     console.log(trainList);
+    displayData();
 }
 
 function displayData() {
@@ -191,7 +192,8 @@ function displayData() {
                 　12:34 +3分　区間急行 京王線新宿行 10両編成
                 　現在位置 京王永山～若葉台駅間
             */
-           if (t.dir == "下り") document.getElementById("down").innerHTML += displayE; else if (t.dir == "上り") document.getElementById("up").innerHTML += displayE;
+            if (t.dir == "下り") document.getElementById("down").innerHTML += displayE; else if (t.dir == "上り") document.getElementById("up").innerHTML += displayE;
+            document.getElementById("displayStatus").innerText = "";
         });
     } else console.error('"trainData" does not contain any data.');
 }
