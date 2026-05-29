@@ -154,7 +154,9 @@ async function createTrainData(allTrainData) {
                         ser: trainData.ser,
                         pos: `${positionData}`,
                         ht: `${String(time[0]).padStart(2, '0')}:${String(time[1]).padStart(2, '0')}`,
-                        htd: `${String(diaTime[0]).padStart(2, '0')}:${String(diaTime[1]).padStart(2, '0')}`
+                        htd: `${String(diaTime[0]).padStart(2, '0')}:${String(diaTime[1]).padStart(2, '0')}`,
+                        dh: diaTime[0],
+                        dm: diaTime[1]
                     };
                     /*
                         num: `${trainData.num}レ`,
@@ -180,6 +182,7 @@ async function createTrainData(allTrainData) {
             if (trainData != null) trainList[trainList.length] = trainData;
         }
     }
+    trainList.sort((a, b) => a.dh != b.dh ? a.dh - b.dh : a.dm - b.dm);
     console.log(trainList);
     displayData();
 }
