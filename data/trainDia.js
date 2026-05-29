@@ -104,12 +104,14 @@ async function getPosition() {
         }
         for (const item of data) {
             sec = await Promise.resolve(poList.get(item.id));
-            data2[data2.length] = {
-                train: [],
-                section: sec
-            };
-            for await (const dt of setTrainData(item.ps)) {
-                data2[data2.length - 1].train[data2[data2.length - 1].train.length] = dt;
+            if (sec) {
+                data2[data2.length] = {
+                    train: [],
+                    section: `${sec.name}${sec.kind}`
+                };
+                for await (const dt of setTrainData(item.ps)) {
+                    data2[data2.length - 1].train[data2[data2.length - 1].train.length] = dt;
+                }
             }
         }
         console.log(data2);
@@ -122,7 +124,7 @@ async function getPosition() {
 async function createTrainData(allTrainData) {
     trainList = [];
     const deleteTrain = async function* (items) {
-        const positionData = `${items.section.name}${items.section.kind}`;
+        const positionData = items.section;
         for (const trainData of items.train) {
             try {
                 const r = await fetch(`https://a.opentidkeio.jp/dia/${trainData.num}.json?ts=${new Date().getTime()}`);
