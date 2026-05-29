@@ -77,6 +77,7 @@ async function settings() {
 }
 
 async function getPosition() {
+    document.getElementById("displayStatus").innerText = "読み込み中...";
     let data2 = [];
     try {
         let r = await fetch(`https://a.opentidkeio.jp/${jf}?ver=${new Date().getTime()}`)
@@ -102,7 +103,8 @@ async function getPosition() {
             }
         }
         for (const item of data) {
-            sec = await Promise.resolve(poList.get(item.id));
+            itemID = item.id;
+            sec = poList.get(itemID);
             data2[data2.length] = {
                 train: [],
                 section: `${sec.name}${sec.kind}`
