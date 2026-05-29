@@ -68,7 +68,7 @@ async function settings() {
                 name: ""
             }
         ];
-        poList = new Map(rePo.pos.map(p => [p.ID, p]));
+        poList = rePo.pos;
         deList = reDe.ikisaki;
         getPosition();
     } catch (er) {
@@ -104,7 +104,7 @@ async function getPosition() {
         }
         for (const item of data) {
             itemID = item.id;
-            sec = poList.get(itemID);
+            sec = poList.find(p => p.id == itemID);
             data2[data2.length] = {
                 train: [],
                 section: `${sec.name}${sec.kind}`
