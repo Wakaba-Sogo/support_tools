@@ -154,7 +154,7 @@ async function createTrainData(allTrainData) {
                         ser: trainData.ser,
                         pos: `${positionData}`,
                         ht: `${String(time[0]).padStart(2, '0')}:${String(time[1]).padStart(2, '0')}`,
-                        htd: `${String(diaTime[0]).padStart(2, '0')}:${String(diaTime[1])}`
+                        htd: `${String(diaTime[0]).padStart(2, '0')}:${String(diaTime[1]).padStart(2, '0')}`
                     };
                     /*
                         num: `${trainData.num}レ`,
