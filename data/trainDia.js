@@ -68,7 +68,7 @@ async function settings() {
                 name: ""
             }
         ];
-        poList = rePo.pos;
+        poList = new Map(rePo.pos.map(p => [p.ID, p]));
         deList = reDe.ikisaki;
         getPosition();
     } catch (er) {
@@ -103,11 +103,10 @@ async function getPosition() {
             }
         }
         for (const item of data) {
-            itemID = item.id;
-            sec = poList.find(p => p.id == itemID);
+            sec = await Promise.resolve(poList.get(item.id));
             data2[data2.length] = {
                 train: [],
-                section: `${sec.name}${sec.kind}`
+                section: sec
             };
             for await (const dt of setTrainData(item.ps)) {
                 data2[data2.length - 1].train[data2[data2.length - 1].train.length] = dt;
@@ -123,7 +122,7 @@ async function getPosition() {
 async function createTrainData(allTrainData) {
     trainList = [];
     const deleteTrain = async function* (items) {
-        const positionData = items.section;
+        const positionData = `${items.section.name}${items.section.kind}`;
         for (const trainData of items.train) {
             try {
                 const r = await fetch(`https://a.opentidkeio.jp/dia/${trainData.num}.json?ts=${new Date().getTime()}`);
