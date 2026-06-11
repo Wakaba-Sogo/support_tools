@@ -180,6 +180,7 @@ async function createTrainData(allTrainData) {
                         ttd: `${String(diaTimeA[0]).padStart(2, '0')}:${String(diaTimeA[1]).padStart(2, '0')}`,
                         ht: `${String(time[0]).padStart(2, '0')}:${String(time[1]).padStart(2, '0')}`,
                         htd: `${String(diaTime[0]).padStart(2, '0')}:${String(diaTime[1]).padStart(2, '0')}`,
+                        cr: ``,
                         dh: diaTime[0],
                         dm: diaTime[1]
                     };
@@ -195,7 +196,8 @@ async function createTrainData(allTrainData) {
                         tt: `若葉台駅到着予定時刻 ${timeA[0]}時${timeA[1]}分`,遅延分数込
                         ttd: `若葉台駅到着予定時刻 ${diatimeA[0]}時${diatimeA[1]}分`,
                         ht: `若葉台駅発車予想時刻 ${time[0]}時${time[1]}分`,遅延分数込
-                        htd: `若葉台駅発車予定時刻 ${diaTime[0]}時${diaTime[1]}分`
+                        htd: `若葉台駅発車予定時刻 ${diaTime[0]}時${diaTime[1]}分`,
+                        cr: `混雑度 ？？？`
                     */
                     else yield null;
                 } else yield null; else yield null;
