@@ -133,15 +133,23 @@ async function createTrainData(allTrainData) {
                 let ko39 = res.findIndex(e => e.sn == "若葉台");
                 if (ko39 != -1) if (res[ko39].pa == "1" && res[ko39].ht != "") {
                     let time = res[ko39].ht.split(":").map(Number);
+                    let timeA = res[ko39].tt.split(":").map(Number);
                     let nowH = new Date().getHours();
                     let nowM = new Date().getMinutes();
                     if (time[0] < 4) time[0] = time[0] + 24;
+                    if (timeA[0] < 4) timeA[0] = timeA[0] + 24;
                     if (nowH < 4) nowH = Number(nowH) + 24;
-                    let diaTime = [time[0], time[1]];
+                    let diaTime = time;
+                    let diaTimeA = timeA;
                     time[1] += trainData.del;
+                    timeA[1] += trainData.del;
                     if (time[1] >= 60) {
                         time[1] %= 60;
                         time[0] += Math.floor(time[1] / 60);
+                    }
+                    if (timeA[1] >= 60) {
+                        timeA[1] %= 60;
+                        timeA[0] += Math.floor(timeA[1] / 60);
                     }
                     if (time[0] > nowH || (time[0] == nowH && time[1] >= nowM))
                     yield {
@@ -153,6 +161,8 @@ async function createTrainData(allTrainData) {
                         del: `${trainData.del}`,
                         ser: trainData.ser,
                         pos: `${positionData}`,
+                        tt: `${String(timeA[0]).padStart(2, '0')}:${String(timeA[1]).padStart(2, '0')}`,
+                        ttd: `${String(diaTimeA[0]).padStart(2, '0')}:${String(diaTimeA[1]).padStart(2, '0')}`,
                         ht: `${String(time[0]).padStart(2, '0')}:${String(time[1]).padStart(2, '0')}`,
                         htd: `${String(diaTime[0]).padStart(2, '0')}:${String(diaTime[1]).padStart(2, '0')}`,
                         dh: diaTime[0],
@@ -167,6 +177,8 @@ async function createTrainData(allTrainData) {
                         del: `遅れ${trainData.del}分`,
                         ser: trainData.ser,
                         pos: `現在位置 ${positionData}`,
+                        tt: `若葉台駅到着予定時刻 ${timeA[0]}時${timeA[1]}分`,遅延分数込
+                        ttd: `若葉台駅到着予定時刻 ${diatimeA[0]}時${diatimeA[1]}分`,
                         ht: `若葉台駅発車予想時刻 ${time[0]}時${time[1]}分`,遅延分数込
                         htd: `若葉台駅発車予定時刻 ${diaTime[0]}時${diaTime[1]}分`
                     */
