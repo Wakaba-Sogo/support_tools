@@ -3,7 +3,13 @@ let jf,
     trList,
     poList,
     deList,
-    trainList = [];
+    trainList = [],
+    tiList = {
+        jyokyo_1: "概ね平常運行",
+        jyokyo_2: "運転見合わせ",
+        jyokyo_3: "一部運転見合わせ",
+        jyokyo_4: "遅れています"
+    };
 
 async function settings() {
     try {
@@ -12,6 +18,15 @@ async function settings() {
         let sys = reSy.system;
         let v = sys.find(it => "version" in it).version;
         jf = sys.find(it => "jsonfile" in it).jsonfile;
+
+        let tInfo = await fetch(`https://a.opentidkeio.jp/unkouinf/unkou_pub2.csv?_=${new Date().getTime()}`);
+        let tres = await tInfo.text();
+        let tiData = tres.split('\r\n');
+        for (var i = 0; i < tiData.length; i++) {
+            tiData[i] = tiData[i].split(',');
+        };
+        tiData = tiData.find(d => d[0] == "senku_1");
+        document.getElementById("tr_info").innerText = tiList[tiData[1]];
 
         let [reTy, rePo, reDe] = await Promise.all([
             fetch(`https://a.opentidkeio.jp/config/syasyu.json?ver=${v}`)
