@@ -234,12 +234,12 @@ function displayData() {
         document.getElementById("up").innerHTML = ``;
         trainList.forEach(t => {
             let displayE;
-            if (Number(t.del)) displayE = `<div id="${t.num}"><span>${t.htd}</span> <span class="delay">+${t.del}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span><br><span>混雑度</span> <span>${t.cr != "-1" ? t.cr : "不明"}</span></div><br>`;
-            else displayE = `<div id="${t.num}"><span>${t.htd}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span><br><span>混雑度</span> <span>${t.cr != "-1" ? t.cr : "不明"}</span></div><br>`;
+            if (Number(t.del)) displayE = `<div id="${t.num}"><span>${t.htd}</span> <span class="delay">+${t.del}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span><br><span>予想混雑度</span> <span>${t.cr != "-1" ? t.cr : "不明"}</span></div><br>`;
+            else displayE = `<div id="${t.num}"><span>${t.htd}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span><br><span>予想混雑度</span> <span>${t.cr != "-1" ? t.cr : "不明"}</span></div><br>`;
             /*　例
                 　12:34 +3分　区間急行 京王線新宿行 10両編成
                 　現在位置 京王永山～若葉台駅間
-                　混雑度 中
+                　予想混雑度 中
             */
             if (t.dir == "下り") document.getElementById("down").innerHTML += displayE; else if (t.dir == "上り") document.getElementById("up").innerHTML += displayE;
             document.getElementById("displayStatus").innerText = "";
