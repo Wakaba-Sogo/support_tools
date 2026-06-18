@@ -3,6 +3,7 @@ let jf,
     trList,
     poList,
     deList,
+    crList,
     trainList = [],
     tiList = {
         jyokyo_1: "概ね平常運行",
@@ -28,12 +29,14 @@ async function settings() {
         tiData = tiData.find(d => d[0] == "senku_1");
         document.getElementById("tr_info").innerText = tiList[tiData[1]];
 
-        let [reTy, rePo, reDe] = await Promise.all([
+        let [reTy, rePo, reDe, reCr] = await Promise.all([
             fetch(`https://a.opentidkeio.jp/config/syasyu.json?ver=${v}`)
             .then(r => r.json()),
             fetch(`https://a.opentidkeio.jp/config/position.json?ver=${v}`)
             .then(r => r.json()),
             fetch(`https://a.opentidkeio.jp/config/ikisaki.json?ver=${v}`)
+            .then(r => r.json()),
+            fetch(`data/trainData.json`)
             .then(r => r.json())
         ]);
         tyList = reTy.syasyu.filter(it => it["style"] != "STYLE_STOP_DUMMY");
@@ -85,6 +88,7 @@ async function settings() {
         ];
         poList = new Map(rePo.pos.map(p => [p.ID, p]));
         deList = reDe.ikisaki;
+        crList = reCr;
         getPosition();
     } catch (er) {
         console.error(er);
@@ -147,6 +151,8 @@ async function createTrainData(allTrainData) {
                 const res = re.dy;
                 let ko39 = res.findIndex(e => e.sn == "若葉台");
                 if (ko39 != -1) if (res[ko39].pa == "1" && res[ko39].ht != "") {
+                    let crowd = crList.crowded[trainData.num] || "-1";
+                    crowd != "-1" ? crowd = crList.dispCrData[crowd] || "-1" : "-1";
                     let time = res[ko39].ht.split(":").map(Number);
                     let timeA = res[ko39].tt.split(":").map(Number);
                     let nowH = new Date().getHours();
@@ -180,7 +186,7 @@ async function createTrainData(allTrainData) {
                         ttd: `${String(diaTimeA[0]).padStart(2, '0')}:${String(diaTimeA[1]).padStart(2, '0')}`,
                         ht: `${String(time[0]).padStart(2, '0')}:${String(time[1]).padStart(2, '0')}`,
                         htd: `${String(diaTime[0]).padStart(2, '0')}:${String(diaTime[1]).padStart(2, '0')}`,
-                        cr: ``,
+                        cr: `${crowd}`,
                         dh: diaTime[0],
                         dm: diaTime[1]
                     };
@@ -198,6 +204,12 @@ async function createTrainData(allTrainData) {
                         ht: `若葉台駅発車予想時刻 ${time[0]}時${time[1]}分`,遅延分数込
                         htd: `若葉台駅発車予定時刻 ${diaTime[0]}時${diaTime[1]}分`,
                         cr: `混雑度 ？？？`
+                        若葉総合高等学校生徒・教員の混雑度
+                        0 ほぼ空席・いない
+                        1 人はいるが座れる・スムーズに横断可能
+                        2 立ち客が少々・1回で横断可能
+                        3 混んでいるがスペースはある・1回で横断不可
+                        4 満員・2回目以降でも混雑
                     */
                     else yield null;
                 } else yield null; else yield null;
@@ -222,10 +234,11 @@ function displayData() {
         document.getElementById("up").innerHTML = ``;
         trainList.forEach(t => {
             let displayE;
-            if (Number(t.del)) displayE = `<div id="${t.num}"><span>${t.htd}</span> <span class="delay">+${t.del}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span></div><br>`; else displayE = `<div id="${t.num}"><span>${t.htd}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span></div><br>`;
+            if (Number(t.del)) displayE = `<div id="${t.num}"><span>${t.htd}</span> <span class="delay">+${t.del}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span></div><br>`; else displayE = `<div id="${t.num}"><span>${t.htd}</span>　<span>${t.trn}</span> <span>${t.st}</span> <span>${t.car}両編成</span><br>現在位置 <span>${t.pos}</span><br><span>混雑度</span> <span>${t.cr != "-1" ? t.cr : "不明"}</span></div><br>`;
             /*　例
                 　12:34 +3分　区間急行 京王線新宿行 10両編成
                 　現在位置 京王永山～若葉台駅間
+                　混雑度 中
             */
             if (t.dir == "下り") document.getElementById("down").innerHTML += displayE; else if (t.dir == "上り") document.getElementById("up").innerHTML += displayE;
             document.getElementById("displayStatus").innerText = "";
