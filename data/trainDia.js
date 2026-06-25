@@ -151,7 +151,10 @@ async function createTrainData(allTrainData) {
                 const res = re.dy;
                 let ko39 = res.findIndex(e => e.sn == "若葉台");
                 if (ko39 != -1) if (res[ko39].pa == "1" && res[ko39].ht != "") {
-                    let crowd = crList.crowded[trainData.num] || "-1";
+                    let f = await fetch(`https://script.google.com/macros/s/AKfycbyXwgNJZKIJojuKZ1RLxJp5aiWroSeqJmVo9690yNM9Xy8cSa3F26P1DAQC-r_9wdgd/exec?type=crowded&train=${trainData.num}`);
+                    let crowdData = await f.text();
+                    crowdData = Number(crowdData);
+                    let crowd = crowdData != -1 ? crowdData : crList.crowded[trainData.num] || "-1";
                     crowd != "-1" ? crowd = crList.dispCrData[crowd] || "-1" : "-1";
                     let time = res[ko39].ht.split(":").map(Number);
                     let timeA = res[ko39].tt.split(":").map(Number);
