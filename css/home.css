@@ -1,3 +1,13 @@
 .delay {
     color: red;
 }
+a,
+.url {
+    color: #007ac0;
+    text-decoration: none;
+}
+
+a:hover,
+.url:hover {
+    text-decoration: underline;
+}
