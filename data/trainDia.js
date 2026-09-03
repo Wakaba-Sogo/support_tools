@@ -20,7 +20,10 @@ function defaltOpt(data) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: data
+        body: {
+            type: "fetch",
+            ...data
+        }
     };
 }
 
