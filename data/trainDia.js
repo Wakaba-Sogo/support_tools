@@ -12,15 +12,27 @@ let jf,
         jyokyo_4: "遅れています"
     };
 
+const gas = "https://script.google.com/macros/s/AKfycbySoofnM_FINu6X0DswcU5shwztDlq2rE6TjsGJ_cq6sS3aEUDo9IY5vNV0CdjJsM4/exec";
+
+function defaltOpt(data) {
+    return {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data
+    };
+}
+
 async function settings() {
     try {
-        let r = await fetch(`https://a.opentidkeio.jp/config/system.json?ver=${new Date().getTime()}`);
+        let r = await fetch(gas, defaltOpt({url: `https://a.opentidkeio.jp/config/system.json?ver=${new Date().getTime()}`}));
         let reSy = await r.json();
         let sys = reSy.system;
         let v = sys.find(it => "version" in it).version;
         jf = sys.find(it => "jsonfile" in it).jsonfile;
 
-        let tInfo = await fetch(`https://a.opentidkeio.jp/unkouinf/unkou_pub2.csv?_=${new Date().getTime()}`);
+        let tInfo = await fetch(gas, defaltOpt({url: `https://a.opentidkeio.jp/unkouinf/unkou_pub2.csv?_=${new Date().getTime()}`}));
         let tres = await tInfo.text();
         let tiData = tres.split('\r\n');
         for (var i = 0; i < tiData.length; i++) {
@@ -30,11 +42,11 @@ async function settings() {
         document.getElementById("tr_info").innerText = tiList[tiData[1]];
 
         let [reTy, rePo, reDe, reCr] = await Promise.all([
-            fetch(`https://a.opentidkeio.jp/config/syasyu.json?ver=${v}`)
+            fetch(gas, defaltOpt({url: `https://a.opentidkeio.jp/config/syasyu.json?ver=${v}`}))
             .then(r => r.json()),
-            fetch(`https://a.opentidkeio.jp/config/position.json?ver=${v}`)
+            fetch(gas, defaltOpt({url: `https://a.opentidkeio.jp/config/position.json?ver=${v}`}))
             .then(r => r.json()),
-            fetch(`https://a.opentidkeio.jp/config/ikisaki.json?ver=${v}`)
+            fetch(gas, defaltOpt({url: `https://a.opentidkeio.jp/config/ikisaki.json?ver=${v}`}))
             .then(r => r.json()),
             fetch(`data/trainData.json`)
             .then(r => r.json())
@@ -99,7 +111,7 @@ async function getPosition() {
     document.getElementById("displayStatus").innerText = "読み込み中...";
     let data2 = [];
     try {
-        let r = await fetch(`https://a.opentidkeio.jp/${jf}?ver=${new Date().getTime()}`)
+        let r = await fetch(gas, defaltOpt({url: `https://a.opentidkeio.jp/${jf}?ver=${new Date().getTime()}`}))
         let reIn = await r.json();
         let data = (reIn.TB.concat(reIn.TS)).filter(it => it["sn"] != "I");
         //bs 番線 dl 遅延分数 ik 行先 ik_tr 詳細行先 inf 案内 ki 0上1下 sr 両数 sy 種別 sy_tr 詳細種別？ tr 列番 sk 車両形式
@@ -146,12 +158,12 @@ async function createTrainData(allTrainData) {
         const positionData = items.section;
         for (const trainData of items.train) {
             try {
-                const r = await fetch(`https://a.opentidkeio.jp/dia/${trainData.num}.json?ts=${new Date().getTime()}`);
+                const r = await fetch(gas, defaltOpt({url: `https://a.opentidkeio.jp/dia/${trainData.num}.json?ts=${new Date().getTime()}`}));
                 const re = await r.json();
                 const res = re.dy;
                 let ko39 = res.findIndex(e => e.sn == "若葉台");
                 if (ko39 != -1) if (res[ko39].pa == "1" && res[ko39].ht != "") {
-                    let f = await fetch(`https://script.google.com/macros/s/AKfycbyXwgNJZKIJojuKZ1RLxJp5aiWroSeqJmVo9690yNM9Xy8cSa3F26P1DAQC-r_9wdgd/exec?type=crowded&train=${trainData.num}`);
+                    let f = await fetch(`${gas}?type=crowded&train=${trainData.num}`);
                     let crowdData = await f.text();
                     crowdData = Number(crowdData);
                     let crowd = crowdData != -1 ? crowdData : crList.crowded[trainData.num] || "-1";
